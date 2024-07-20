@@ -90,7 +90,10 @@ export const POST = async (req: NextRequest) => {
 	fileToDelete[randomFileName] = deleteFileTimeOut;
 	console.log(randomFileName);
 	return NextResponse.json({
-		url: "http://localhost:3000/upload/" + randomFileName,
-		downloadUrl: "http://localhost:3000/api/file/?f=" + randomFileName
+		url:
+			"https://nextjs-file-uploader-omega.vercel.app/upload/" + randomFileName,
+		downloadUrl:
+			"https://nextjs-file-uploader-omega.vercel.app/api/file/?f=" +
+			randomFileName
 	});
 };

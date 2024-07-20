@@ -19,10 +19,13 @@ export default function Home() {
 	const handleChange = async (e: any) => {
 		const formData = new FormData();
 		formData.append("file", e.target.files[0]);
-		const data = await fetch("http://localhost:3000/api/file", {
-			method: "POST",
-			body: formData
-		});
+		const data = await fetch(
+			"https://nextjs-file-uploader-omega.vercel.app/api/file",
+			{
+				method: "POST",
+				body: formData
+			}
+		);
 		const json = await data.json();
 		const qrUri = await generateQr(json.url);
 		setImageInfo({
