@@ -1,7 +1,5 @@
 NextJS Image uploader app with qrcode
 
-demo is here => https://nextjs-file-uploader-omega.vercel.app/
-
 
 
 
