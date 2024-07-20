@@ -1,3 +1,12 @@
+NextJS Image uploader app with qrcode
+
+demo is here => https://nextjs-file-uploader-omega.vercel.app/
+
+
+
+
+
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
