@@ -80,21 +80,23 @@ export default function Home() {
 			) : (
 				<div className="flex flex-col items-center bg-white border border-gray-200 rounded-lg shadow md:flex-row hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
 					<Image
-						className="object-cover w-full rounded-t-lg h-96 md:h-auto md:w-48 md:rounded-none md:rounded-s-lg"
+						className="object-cover w-fit rounded-t-lg md:h-auto md:w-48 md:rounded-none md:rounded-s-lg"
 						src={imageInfo.qrUrl}
 						alt=""
 						height="100"
 						width="100"
 					/>
-					<div className="flex flex-col justify-between p-4 leading-normal">
-						<span>Preview:</span>
-						<Link href={imageInfo.previewUrl} target="_blank">
-							{imageInfo.previewUrl}
-						</Link>
+					<div className="flex flex-col w-[200px] lg:w-fit flex-wrap justify-between p-4 leading-normal overflow-hidden">
 						<h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-							<span>Download:</span>
+							<Link href={imageInfo.previewUrl} target="_blank">
+								<span>Preview: </span>
+								<span className="hidden lg:flex">{imageInfo.previewUrl}</span>
+							</Link>
+						</h5>
+						<h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
 							<Link href={imageInfo.downloadUrl} target="_blank">
-								{imageInfo.downloadUrl}
+								<span>Download: </span>
+								<span className="hidden lg:flex">{imageInfo.downloadUrl}</span>
 							</Link>
 						</h5>
 						<button

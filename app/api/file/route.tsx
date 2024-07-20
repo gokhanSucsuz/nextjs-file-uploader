@@ -58,42 +58,51 @@ export const GET = async (req: NextRequest) => {
 };
 
 export const POST = async (req: NextRequest) => {
-	const payload = await req.formData();
-	const contentType = req.headers.get("content-type");
-	if (!contentType || !contentType.startsWith("multipart/form-data")) {
+	try {
+		const payload = await req.formData();
+		const contentType = req.headers.get("content-type");
+		if (!contentType || !contentType.startsWith("multipart/form-data")) {
+			return NextResponse.json(
+				{
+					error: "Invalid content type!"
+				},
+				{ status: 400 }
+			);
+		}
+		const file = payload.get("file") as File;
+		const destinationPath = path.join(process.cwd(), "public/upload");
+		const randomFileName = generateRandomFileName(file);
+
+		const filePath = path.join(destinationPath, randomFileName);
+		const fileArrayBuffer = await file.arrayBuffer();
+		if (!existsSync(destinationPath)) {
+			await fs.mkdir(destinationPath, { recursive: true });
+		}
+		await fs.writeFile(filePath, Buffer.from(fileArrayBuffer));
+		const deleteFileTimeOut = setTimeout(async () => {
+			try {
+				await fs.unlink(filePath);
+				console.log("File has been deleted ", randomFileName);
+				delete fileToDelete[randomFileName];
+			} catch (error) {
+				console.log("The file has not been deleted!");
+			}
+		}, 1 * 60 * 1000);
+		fileToDelete[randomFileName] = deleteFileTimeOut;
+		console.log(randomFileName);
+		return NextResponse.json({
+			url:
+				"https://nextjs-file-uploader-omega.vercel.app/upload/" +
+				randomFileName,
+			downloadUrl:
+				"https://nextjs-file-uploader-omega.vercel.app/api/file/?f=" +
+				randomFileName
+		});
+	} catch (error) {
+		console.error("POST Error=>", error);
 		return NextResponse.json(
-			{
-				error: "Invalid content type!"
-			},
-			{ status: 400 }
+			{ error: "Internal Server Error" },
+			{ status: 500 }
 		);
 	}
-	const file = payload.get("file") as File;
-	const destinationPath = path.join(process.cwd(), "public/upload");
-	const randomFileName = generateRandomFileName(file);
-
-	const filePath = path.join(destinationPath, randomFileName);
-	const fileArrayBuffer = await file.arrayBuffer();
-	if (!existsSync(destinationPath)) {
-		await fs.mkdir(destinationPath, { recursive: true });
-	}
-	await fs.writeFile(filePath, Buffer.from(fileArrayBuffer));
-	const deleteFileTimeOut = setTimeout(async () => {
-		try {
-			await fs.unlink(filePath);
-			console.log("File has been deleted ", randomFileName);
-			delete fileToDelete[randomFileName];
-		} catch (error) {
-			console.log("The file has not been deleted!");
-		}
-	}, 1 * 60 * 1000);
-	fileToDelete[randomFileName] = deleteFileTimeOut;
-	console.log(randomFileName);
-	return NextResponse.json({
-		url:
-			"https://nextjs-file-uploader-omega.vercel.app/upload/" + randomFileName,
-		downloadUrl:
-			"https://nextjs-file-uploader-omega.vercel.app/api/file/?f=" +
-			randomFileName
-	});
 };
