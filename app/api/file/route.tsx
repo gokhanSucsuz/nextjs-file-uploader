@@ -19,7 +19,11 @@ export const GET = async (req: NextRequest) => {
 			{ status: 400 }
 		);
 	}
-	const filePath = path.join(process.cwd(), "upload", fileName?.toString());
+	const filePath = path.join(
+		process.cwd(),
+		"public/upload",
+		fileName?.toString()
+	);
 	try {
 		const fileContent = await fs.readFile(filePath);
 		const fileExt = path.extname(fileName);
@@ -38,7 +42,10 @@ export const GET = async (req: NextRequest) => {
 		}
 		const headers = {
 			"Content-Disposition": "attachment; filename=" + fileName,
-			"Content-Type": contentType
+			"Content-Type": contentType,
+			"Access-Control-Allow-Origin": "*",
+			"Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+			"Access-Control-Allow-Headers": "Content-Type, Authorization"
 		};
 		return new Response(fileContent, {
 			headers,
@@ -66,20 +73,18 @@ export const POST = async (req: NextRequest) => {
 			);
 		}
 		const file = payload.get("file") as File;
-		const destinationPath = path.join(process.cwd(), "upload");
+		const destinationPath = path.join(process.cwd(), "public/upload");
 
 		if (!existsSync(destinationPath)) {
 			await fs.mkdir(destinationPath, { recursive: true });
 		}
 
 		const randomFileName = generateRandomFileName(file);
-
 		const filePath = path.join(destinationPath, randomFileName);
 		const fileArrayBuffer = await file.arrayBuffer();
-		if (!existsSync(destinationPath)) {
-			await fs.mkdir(destinationPath, { recursive: true });
-		}
 		await fs.writeFile(filePath, Buffer.from(fileArrayBuffer));
+
+		console.log("File saved to: ", filePath);
 		const deleteFileTimeOut = setTimeout(async () => {
 			try {
 				await fs.unlink(filePath);
@@ -91,13 +96,23 @@ export const POST = async (req: NextRequest) => {
 		}, 1 * 60 * 1000);
 		fileToDelete[randomFileName] = deleteFileTimeOut;
 		console.log(randomFileName);
-		return NextResponse.json({
-			url:
-				"https://nextjs-file-uploader-nine.vercel.app/upload/" + randomFileName,
-			downloadUrl:
-				"https://nextjs-file-uploader-nine.vercel.app/api/file/?f=" +
-				randomFileName
-		});
+		return NextResponse.json(
+			{
+				url:
+					"https://nextjs-file-uploader-nine.vercel.app/upload/" +
+					randomFileName,
+				downloadUrl:
+					"https://nextjs-file-uploader-nine.vercel.app/api/file/?f=" +
+					randomFileName
+			},
+			{
+				headers: {
+					"Access-Control-Allow-Origin": "*",
+					"Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+					"Access-Control-Allow-Headers": "Content-Type, Authorization"
+				}
+			}
+		);
 	} catch (error) {
 		console.error("POST Error=>", error);
 		return NextResponse.json(
@@ -106,6 +121,7 @@ export const POST = async (req: NextRequest) => {
 		);
 	}
 };
+
 export const OPTIONS = async () => {
 	return new NextResponse(null, {
 		headers: {
