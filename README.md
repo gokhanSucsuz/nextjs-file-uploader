@@ -1,7 +1,7 @@
 NextJS Image uploader app with qrcode
 
 demo is here
-https://github.com/user-attachments/assets/a9a983d6-75e0-4b29-aca6-481e20452619
+https://youtu.be/EJk5huEkGso
 
 
 
