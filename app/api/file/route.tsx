@@ -71,18 +71,17 @@ export const POST = async (req: NextRequest) => {
 		}
 		const file = payload.get("file") as File;
 		const destinationPath = path.join(process.cwd(), "public/upload");
+
 		// Check if the directory exists, if not create it
 		if (!existsSync(destinationPath)) {
 			await fs.mkdir(destinationPath, { recursive: true });
 		}
-		const randomFileName = generateRandomFileName(file);
 
+		const randomFileName = generateRandomFileName(file);
 		const filePath = path.join(destinationPath, randomFileName);
 		const fileArrayBuffer = await file.arrayBuffer();
-		if (!existsSync(destinationPath)) {
-			await fs.mkdir(destinationPath, { recursive: true });
-		}
 		await fs.writeFile(filePath, Buffer.from(fileArrayBuffer));
+
 		const deleteFileTimeOut = setTimeout(async () => {
 			try {
 				await fs.unlink(filePath);
