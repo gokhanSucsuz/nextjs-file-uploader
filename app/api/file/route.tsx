@@ -19,11 +19,7 @@ export const GET = async (req: NextRequest) => {
 			{ status: 400 }
 		);
 	}
-	const filePath = path.join(
-		process.cwd(),
-		"public/upload",
-		fileName?.toString()
-	);
+	const filePath = path.join(process.cwd(), "upload", fileName?.toString());
 	try {
 		const fileContent = await fs.readFile(filePath);
 		const fileExt = path.extname(fileName);
@@ -70,7 +66,7 @@ export const POST = async (req: NextRequest) => {
 			);
 		}
 		const file = payload.get("file") as File;
-		const destinationPath = path.join(process.cwd(), "public/upload");
+		const destinationPath = path.join(process.cwd(), "upload");
 
 		if (!existsSync(destinationPath)) {
 			await fs.mkdir(destinationPath, { recursive: true });
@@ -97,10 +93,9 @@ export const POST = async (req: NextRequest) => {
 		console.log(randomFileName);
 		return NextResponse.json({
 			url:
-				"https://nextjs-file-uploader-omega.vercel.app/upload/" +
-				randomFileName,
+				"https://nextjs-file-uploader-nine.vercel.app/upload/" + randomFileName,
 			downloadUrl:
-				"https://nextjs-file-uploader-omega.vercel.app/api/file/?f=" +
+				"https://nextjs-file-uploader-nine.vercel.app/api/file/?f=" +
 				randomFileName
 		});
 	} catch (error) {

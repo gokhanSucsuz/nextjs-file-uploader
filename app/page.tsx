@@ -20,7 +20,7 @@ export default function Home() {
 		const formData = new FormData();
 		formData.append("file", e.target.files[0]);
 		const data = await fetch(
-			"https://nextjs-file-uploader-omega.vercel.app/api/file",
+			"https://nextjs-file-uploader-nine.vercel.app/api/file",
 			{
 				method: "POST",
 				body: formData
