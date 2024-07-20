@@ -15,8 +15,8 @@ export const GET = async (req: NextRequest) => {
 	const fileName = req.nextUrl.searchParams.get("f");
 	if (!fileName) {
 		return NextResponse.json(
-			{ error: "Thile could not be found!" },
-			{ status: 404 }
+			{ error: "The file could not be found!" },
+			{ status: 400 }
 		);
 	}
 	const filePath = path.join(
@@ -41,8 +41,8 @@ export const GET = async (req: NextRequest) => {
 			contentType = "image/gif";
 		}
 		const headers = {
-			"Content-Type": contentType,
-			"Content-Disposition": "attachment; filename=" + fileName
+			"Content-Disposition": "attachment; filename=" + fileName,
+			"Content-Type": contentType
 		};
 		return new Response(fileContent, {
 			headers,
@@ -59,7 +59,6 @@ export const GET = async (req: NextRequest) => {
 
 export const POST = async (req: NextRequest) => {
 	const payload = await req.formData();
-
 	const contentType = req.headers.get("content-type");
 	if (!contentType || !contentType.startsWith("multipart/form-data")) {
 		return NextResponse.json(
@@ -91,7 +90,7 @@ export const POST = async (req: NextRequest) => {
 	fileToDelete[randomFileName] = deleteFileTimeOut;
 	console.log(randomFileName);
 	return NextResponse.json({
-		url: "http://localhost:3000/" + randomFileName,
+		url: "http://localhost:3000/upload/" + randomFileName,
 		downloadUrl: "http://localhost:3000/api/file/?f=" + randomFileName
 	});
 };
